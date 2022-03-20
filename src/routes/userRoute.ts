@@ -1,4 +1,5 @@
 import { UserController } from '../controllers'
+
 let userRouter = (route, app) => {
 
   route.get('/list-user', UserController.getListUser);

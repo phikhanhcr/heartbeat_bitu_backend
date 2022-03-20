@@ -26,7 +26,6 @@ class Authentication {
   public register = async (req, res) => {
     try {
       const { password, username, repeat_password } = req.body;
-      console.log(req.body);
       if (!password || !username || !repeat_password) {
         return res
           .status(500)
@@ -62,7 +61,6 @@ class Authentication {
         password: await hashPassword(password),
         username,
       });
-      console.log({ newUser })
       const jsonWebToken = jwt.sign(
         { userID: newUser._id.toString() },
         process.env.JWT_SECRET,
