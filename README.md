@@ -14,13 +14,13 @@ npm run dev
 
 
 ## Main Function
- Markup : * Login, LogOut, Register
-          * Like and unlike other people and update like count realtime (no need to f5)
+* Login, LogOut, Register
+* Like and unlike other people and update like count realtime (no need to f5)
 
 
 ## Tech Used
- Markup : * ExpressJs
-          * MongoDb
+* ExpressJs
+* MongoDb
 
 ### env example
 
