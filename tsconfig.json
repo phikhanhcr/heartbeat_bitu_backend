@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "outDir": "dist",
+    "noImplicitAny": false
+  },
+  "include": [
+    "src/app.ts",
+    "src/declare.d.ts"
+  ],
+  "lib": ["es2015"]
+}
