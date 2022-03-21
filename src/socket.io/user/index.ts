@@ -7,7 +7,6 @@ let userSocket = io => {
 
     socket.on("user-init", data => {
       addUser(clients, data._id, socket.id)
-      console.log({ clients })
     })
 
     // NOTE -----------------------------------------
@@ -70,7 +69,6 @@ let userSocket = io => {
 
     socket.on("disconnect", () => {
       removeUser(clients, socket.currentUserId, socket.id);
-      console.log({ clients })
     })
   })
 }
