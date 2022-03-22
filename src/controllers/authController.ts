@@ -1,3 +1,4 @@
+import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 
 import UserModel from "../db/models/User/UserModel";
@@ -8,19 +9,15 @@ class Authentication {
 
 
   public getUserByToken = async (req, res) => {
-    const check = await isAuthenticated(req, res);
-    if (check) {
-      const userId = await getUserIdFromReq(req);
-      const user = await UserModel.findById(userId, { password: 0 });
-      return res.status(200).send({
-        message: "Đăng nhập thành công",
-        user: JSON.stringify(user),
-        status: true,
-      });
-    }
-    return res.status(500).json({
-      message: "Token expired, Please try again",
+
+    const userId = req.user;
+    const user = await UserModel.findById(userId, { password: 0 });
+    return res.status(200).send({
+      message: "Đăng nhập thành công",
+      user: JSON.stringify(user),
+      status: true,
     });
+
   };
 
   public register = async (req, res) => {
@@ -94,6 +91,15 @@ class Authentication {
 
   public login = async (req, res) => {
     try {
+      const errors = validationResult(req);
+      
+      if (!errors.isEmpty()) {
+        return res.status(500).send({
+          message: "Vui lòng nhập đầy đủ thông tin 123!",
+          status: "false",
+        });
+      }
+
       const { username, password } = req.body;
       if (!username || !password) {
         return res.status(500).send({

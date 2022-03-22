@@ -1,4 +1,3 @@
-import UserModel from '../../db/models/User/UserModel'
 import { addUser, removeUser } from '../../utils/socketCrud'
 
 let userSocket = io => {

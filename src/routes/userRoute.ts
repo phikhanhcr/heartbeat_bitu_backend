@@ -1,4 +1,6 @@
 import { UserController } from '../controllers'
+import { checkAuthentication } from '../middleware/checkAuthentication'
+
 
 let userRouter = (route, app) => {
 
@@ -6,7 +8,7 @@ let userRouter = (route, app) => {
   route.post('/like', UserController.likeAction);
   route.post('/unlike', UserController.unLikeAction);
 
-  return app.use("/api/user", route);
+  return app.use("/api/user", checkAuthentication, route);
 }
 
 export {

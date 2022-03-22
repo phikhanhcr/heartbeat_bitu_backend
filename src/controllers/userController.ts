@@ -1,13 +1,13 @@
 
 import { checkAuthenticationAndReturnUserId } from '../utils/isAuthenticated';
 import UserModel from '../db/models/User/UserModel';
-
+import initSocket from '../socket.io'
 class User {
 
   public getListUser = async (req, res) => {
     let page = req.params.page || 1;
     let perPage = 10;
-    const userId = await checkAuthenticationAndReturnUserId(req, res);
+    const userId = req.user;
     const users = await UserModel
       .find({ _id: { $ne: userId } })
       // .skip((perPage * page) - perPage)
@@ -18,17 +18,17 @@ class User {
   };
 
   public likeAction = async (req, res) => {
-
-    const userId = await checkAuthenticationAndReturnUserId(req, res);
+    initSocket
+    const userId = req.user;
     const { target_user_id } = req.body;
-    const targetUser = await UserModel.findById(target_user_id);
+    // const targetUser = await UserModel.findById(target_user_id);
 
-    const checkLikeOrNot = await UserModel.find({
+    const targetUser = await UserModel.find({
       _id: target_user_id,
       liked_user: { $in: [userId] },
     });
 
-    if (checkLikeOrNot.length > 0) {
+    if (targetUser.length > 0) {
 
       return res.status(400).json({ msg: "You liked this user." });
     } else {
@@ -41,16 +41,16 @@ class User {
 
   public unLikeAction = async (req, res) => {
 
-    const userId = await checkAuthenticationAndReturnUserId(req, res);
+    const userId = req.user;
     const { target_user_id } = req.body;
-    const targetUser = await UserModel.findById(target_user_id);
+    // const targetUser = await UserModel.findById(target_user_id);
 
-    const checkLikeOrNot = await UserModel.find({
+    const targetUser = await UserModel.find({
       _id: target_user_id,
       liked_user: { $in: [userId] },
     });
 
-    if (checkLikeOrNot.length > 0) {
+    if (targetUser.length > 0) {
 
       targetUser.like_count--;
       targetUser.liked_user = targetUser.liked_user.filter(ele => ele.toString() !== userId);
