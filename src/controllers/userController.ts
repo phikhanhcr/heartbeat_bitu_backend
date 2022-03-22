@@ -1,7 +1,7 @@
 
-import { checkAuthenticationAndReturnUserId } from '../utils/isAuthenticated';
 import UserModel from '../db/models/User/UserModel';
 import initSocket from '../socket.io'
+import { clients } from '../socket.io/user';
 class User {
 
   public getListUser = async (req, res) => {
@@ -18,10 +18,9 @@ class User {
   };
 
   public likeAction = async (req, res) => {
-    initSocket
+    // initSocket
     const userId = req.user;
     const { target_user_id } = req.body;
-    // const targetUser = await UserModel.findById(target_user_id);
 
     const targetUser = await UserModel.find({
       _id: target_user_id,
@@ -29,12 +28,21 @@ class User {
     });
 
     if (targetUser.length > 0) {
-
       return res.status(400).json({ msg: "You liked this user." });
     } else {
-      targetUser.like_count++;
-      targetUser.liked_user.push(userId);
-      await targetUser.save();
+
+      const checkUser = await UserModel.findById(target_user_id)
+      checkUser.like_count++;
+      checkUser.liked_user.push(userId);
+      await checkUser.save();
+
+      if (clients[target_user_id]) {
+        clients[target_user_id].forEach(e => {
+          req.app.settings.io.to(e).emit("response-handle-like", 1);
+        });
+      }
+
+
       return res.status(200).json({ msg: "oke", action: "like" });
     }
   };
@@ -49,12 +57,18 @@ class User {
       _id: target_user_id,
       liked_user: { $in: [userId] },
     });
-
     if (targetUser.length > 0) {
 
-      targetUser.like_count--;
-      targetUser.liked_user = targetUser.liked_user.filter(ele => ele.toString() !== userId);
-      await targetUser.save();
+      targetUser[0].like_count--;
+      targetUser[0].liked_user = targetUser[0].liked_user.filter(ele => ele.toString() !== userId);
+      await targetUser[0].save();
+
+
+      if (clients[target_user_id]) {
+        clients[target_user_id].forEach(e => {
+          req.app.settings.io.to(e).emit("response-handle-unlike", -1);
+        });
+      }
 
       return res.status(200).json({ msg: "oke", action: "unlike" });
     } else {

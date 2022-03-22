@@ -1,7 +1,7 @@
 import { addUser, removeUser } from '../../utils/socketCrud'
 
+export let clients = {};
 let userSocket = io => {
-  let clients = {};
   io.on('connection', socket => {
 
     socket.on("user-init", data => {
@@ -21,27 +21,27 @@ let userSocket = io => {
 
     // WAY 1
 
-    socket.on("handle-like", data => {
-      const { target_user_id } = data;
+    // socket.on("handle-like", data => {
+    //   const { target_user_id } = data;
 
-      if (clients[target_user_id]) {
-        clients[target_user_id].forEach(e => {
-          io.to(e).emit("response-handle-like", 1);
-        });
-      }
-    })
+    //   if (clients[target_user_id]) {
+    //     clients[target_user_id].forEach(e => {
+    //       io.to(e).emit("response-handle-like", 1);
+    //     });
+    //   }
+    // })
 
     // WAY 2
 
-    socket.on("handle-unlike", async data => {
-      const { target_user_id } = data;
+    // socket.on("handle-unlike", async data => {
+    //   const { target_user_id } = data;
 
-      if (clients[target_user_id]) {
-        clients[target_user_id].forEach(e => {
-          io.to(e).emit("response-handle-unlike", -1);
-        });
-      }
-    })
+    //   if (clients[target_user_id]) {
+    //     clients[target_user_id].forEach(e => {
+    //       io.to(e).emit("response-handle-unlike", -1);
+    //     });
+    //   }
+    // })
 
 
     // socket.on("handle-unlike", async data => {

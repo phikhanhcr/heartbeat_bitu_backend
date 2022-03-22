@@ -13,7 +13,6 @@ const checkAuthentication = async (req, res, next) => {
     };
 
     jwt = await jsonwebtoken.verify(token, process.env.JWT_SECRET);
-    console.log({ jwt })
     let expiredJwt = new Date();
     if (jwt && jwt.exp) {
       expiredJwt = new Date(jwt.exp * 1000);

@@ -19,6 +19,8 @@ export const io = new Server(server, {
 });
 
 // like, unlike => push it to queue
+app.set("io", io);
+
 
 ConnectionDb.connect();
 initApp(app);
